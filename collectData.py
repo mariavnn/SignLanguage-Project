@@ -9,13 +9,15 @@ number_of_classes = 3
 dataset_size = 100
 
 cap = cv2.VideoCapture(0)
+
+# Encontrar el índice más alto de las carpetas existentes
+existing_dirs = [int(d) for d in os.listdir(DATA_DIR) if d.isdigit()]
+next_index = max(existing_dirs) + 1 if existing_dirs else 0
+
 for j in range(number_of_classes):
-    # Buscar una carpeta disponible
-    i = 0
-    while os.path.exists(os.path.join(DATA_DIR, f'class_{j}_{i}')):
-        i += 1
-    class_dir = os.path.join(DATA_DIR, f'class_{j}_{i}')
+    class_dir = os.path.join(DATA_DIR, str(next_index))
     os.makedirs(class_dir)
+    next_index += 1
 
     print(f'Collecting data for class {j} in {class_dir}')
 
@@ -33,7 +35,6 @@ for j in range(number_of_classes):
         cv2.imshow('frame', frame)
         cv2.waitKey(25)
         cv2.imwrite(os.path.join(class_dir, f'{counter}.jpg'), frame)
-
         counter += 1
 
 cap.release()
